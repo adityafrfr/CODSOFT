@@ -28,8 +28,7 @@ class MovieGenreClassifier:
             'Random Forest': RandomForestClassifier(n_estimators=100, random_state=42),
             'Naive Bayes': MultinomialNB(),
             'Logistic Regression': LogisticRegression(max_iter=1000, random_state=42),
-            'Linear SVM (Fast)': LinearSVC(random_state=42, C=1.0, max_iter=1000),
-            'SVM': SVC(kernel='linear', random_state=42, C=1.0)
+            'Linear SVM (Fast)': LinearSVC(random_state=42, C=1.0, max_iter=1000)
         }
         self.best_model = None
         self.best_accuracy = 0
@@ -221,13 +220,19 @@ class MovieGenreClassifier:
         return results_df
     
     def save_results(self, results_df, filename='predictions.txt'):
-        with open(filename, 'w', encoding='utf-8') as f:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        filepath = os.path.join(current_dir, filename)
+        
+        with open(filepath, 'w', encoding='utf-8') as f:
             for _, row in results_df.iterrows():
                 f.write(f"{row['id']} ::: {row['title']} ::: {row['predicted_genre']} ::: {row['description']}\n")
         
-        print(f"Predictions saved to {filename}")
+        print(f"Predictions saved to {filepath}")
     
     def save_model(self, filename='movie_genre_model.pkl'):
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        filepath = os.path.join(current_dir, filename)
+        
         model_data = {
             'model': self.best_model,
             'model_name': self.best_model_name,
@@ -236,10 +241,10 @@ class MovieGenreClassifier:
             'best_accuracy': self.best_accuracy
         }
         
-        with open(filename, 'wb') as f:
+        with open(filepath, 'wb') as f:
             pickle.dump(model_data, f)
         
-        print(f"Model saved to {filename}")
+        print(f"Model saved to {filepath}")
         print(f"Saved model: {self.best_model_name}")
         print(f"Saved accuracy: {self.best_accuracy:.4f}")
     
